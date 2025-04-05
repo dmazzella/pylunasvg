@@ -4,5 +4,7 @@
 /.eggs
 *.egg-info
 *.user
+.vscode
+*.idea
 **__pycache__*
 /.pytest_cache
