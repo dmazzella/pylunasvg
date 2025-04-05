@@ -8,19 +8,25 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-22.04, windows-2022, macos-13, macos-14]
+        os: [ linux-intel, linux-arm, windows, macOS-arm ]
+        include:
+          - archs: auto
+            platform: auto
+          - os: linux-intel
+            runs-on: ubuntu-latest
+          - os: linux-arm
+            runs-on: ubuntu-24.04-arm
+          - os: windows
+            runs-on: windows-latest
+          - os: macos-arm
+            runs-on: macos-latest
+            archs: auto,universal
 
     steps:
       - name: Install Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-
-      # - name: Set up QEMU
-      #   if: runner.os == 'Linux'
-      #   uses: docker/setup-qemu-action@v3
-      #   with:
-      #     platforms: all
 
       - name: Checkout repository
         uses: actions/checkout@v4
