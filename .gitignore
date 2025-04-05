@@ -1,0 +1,8 @@
+/build
+/dist
+/wheels
+/.eggs
+*.egg-info
+*.user
+**__pycache__*
+/.pytest_cache
