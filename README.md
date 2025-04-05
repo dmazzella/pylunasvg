@@ -1,11 +1,29 @@
 
 # Python bindings for lunasvg
 
+## Basic Usage
 
-## Build
+```python
+import pylunasvg
+
+svg = pylunasvg.Document.load_from_file("tiger.svg")
+svg.render_to_bitmap().write_to_png("tiger.png")
+```
+
+![alt Screen](https://github.com/dmazzella/pylunasvg/blob/main/examples/tiger.png?raw=true)
+
+### More example:
+- [examples](https://github.com/dmazzella/pylunasvg/tree/main/examples)
+
+## How to build
+
+<details><summary><b>setuptools</b></summary>
+<p>
+
 ```
 git submodule update --init --recursive
 ```
+
 ##### macOS
 ```zsh
 python3 setup.py install
@@ -21,8 +39,17 @@ python setup.py install
 python3 setup.py install
 ```
 
-<details><summary><b>Create Wheels with <b>cibuildwheel</b>:</summary>
+</p>
+</details>
+
+
+
+<details><summary><b>cibuildwheel</b></summary>
 <p>
+
+```
+git submodule update --init --recursive
+```
 
 ##### macOS
 ```zsh
