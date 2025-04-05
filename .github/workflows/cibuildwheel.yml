@@ -8,7 +8,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ linux-intel, linux-arm, windows, macOS-arm ]
+        os: [ linux-intel, linux-arm, windows, macos-arm ]
         include:
           - archs: auto
             platform: auto
@@ -35,10 +35,6 @@ jobs:
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.23.2
-        # with:
-        #   package-dir: .
-        #   output-dir: wheelhouse
-        #   config-file: ./pyproject.toml
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
