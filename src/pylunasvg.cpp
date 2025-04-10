@@ -35,6 +35,16 @@ public:
         return bitmap->height();
     }
 
+    py::object convert_to_rgba(void) const
+    {
+        if (!bitmap)
+        {
+            throw std::runtime_error("Bitmap is null.");
+        }
+        bitmap->convertToRGBA();
+        return py::none();
+    }
+
     py::object write_to_png(const py::object &pyfilename) const
     {
         if (pyfilename.is_none())
@@ -110,15 +120,27 @@ public:
         {
             throw std::invalid_argument("Data cannot be None.");
         }
-        if (!py::isinstance<py::str>(pydata))
+        std::string data;
+        if (py::isinstance<py::bytes>(pydata))
         {
-            throw std::invalid_argument("Data must be a string.");
+            data = py::bytes(pydata).cast<std::string>();
         }
-        if (py::len(pydata) == 0)
+        else if (py::isinstance<py::bytearray>(pydata))
+        {
+            data = py::bytearray(pydata).cast<std::string>();
+        }
+        else if (py::isinstance<py::str>(pydata))
+        {
+            data = py::str(pydata).cast<std::string>();
+        }
+        else
+        {
+            throw std::invalid_argument("Data must be bytes, bytearray, or string.");
+        }
+        if (data.empty())
         {
             throw std::invalid_argument("Data cannot be empty.");
         }
-        std::string data = py::str(pydata).cast<std::string>();
         auto doc = lunasvg::Document::loadFromData(data.c_str(), data.size());
         if (!doc)
         {
@@ -177,6 +199,7 @@ PYBIND11_MODULE(pylunasvg, m)
     py::class_<PyBitmap> PyBitmapClass(m, "Bitmap");
     PyBitmapClass.def(py::init<const std::shared_ptr<lunasvg::Bitmap> &>());
     PyBitmapClass.def("__repr__", &PyBitmap::__repr__);
+    PyBitmapClass.def("convert_to_rgba", &PyBitmap::convert_to_rgba, "Convert the bitmap to RGBA format");
     PyBitmapClass.def("write_to_png", &PyBitmap::write_to_png, py::arg("filename"), "Write the bitmap to a PNG file with the specified filename");
     PyBitmapClass.def("write_to_png_data", &PyBitmap::write_to_png_data, "Write the bitmap to a PNG and return the data as bytes");
     PyBitmapClass.def_property_readonly("data", &PyBitmap::get_data, "Get the raw pixel data of the bitmap as bytes");
