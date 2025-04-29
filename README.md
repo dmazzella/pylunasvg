@@ -1,5 +1,5 @@
 
-# Python bindings for lunasvg
+# Python bindings for [lunasvg](https://github.com/sammycage/lunasvg)
 
 ## Basic Usage
 

@@ -2,12 +2,13 @@ import os
 import re
 import subprocess
 import sys
+import shutil
 from pathlib import Path
 
 from setuptools import Extension, setup
 from setuptools.command.build_ext import build_ext
 
-VERSION = "0.0.1"
+VERSION = "0.0.2"
 
 # Convert distutils Windows platform specifiers to CMake -A arguments
 PLAT_TO_CMAKE = {
@@ -123,6 +124,14 @@ class CMakeBuild(build_ext):
         subprocess.run(
             ["cmake", "--build", ".", *build_args], cwd=build_temp, check=True
         )
+        
+        pyi_file = Path('src') / 'pylunasvg.pyi'
+        if pyi_file.exists():
+            shutil.copy(pyi_file, extdir / 'pylunasvg.pyi')
+            self.announce(f'Copied {pyi_file} to {extdir / "pylunasvg.pyi"}')
+        else:
+            self.warn(f'Type stub file {pyi_file} not found')
+
 
 setup(
     name="pylunasvg",
@@ -130,10 +139,11 @@ setup(
     author="Damiano Mazzella",
     author_email="damianomazzella@gmail.com",
     description="Python bindings for lunasvg",
-    long_description="",
+    long_description="Python bindings for lunasvg, a standalone SVG rendering library. This module provides classes and functions for loading, manipulating, and rendering SVG documents.",
     ext_modules=[CMakeExtension("pylunasvg")],
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False,
     extras_require={"test": ["pytest>=6.0"]},
     python_requires=">=3.9",
+    package_data={"": ["*.pyi"]},
 )
